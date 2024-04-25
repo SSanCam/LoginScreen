@@ -48,16 +48,7 @@ fun LoginScreen(onLoginClicked: (userName: String, password: String) -> Unit) {
                     .height(75.dp)
                     .width(300.dp),
                 singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
-                /*
-                trailinIcon = {
-                    val imagenPassword: ImageBitmap? = loadImageFromFile ("C:\\Users\\Sara S Camilleri\\Desktop\\repos\\DisenioLogin\\misc\\descarga.png")
-                    Icon(
-                        painter = it.asImageBitmap(),
-                        contentDescription = "Password icon."
-                    )
-                }
-                 */
+                visualTransformation = PasswordVisualTransformation()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -75,9 +66,7 @@ fun LoginScreen(onLoginClicked: (userName: String, password: String) -> Unit) {
             ) {
                 Text(
                     text = "Log in",
-                    color = Color.White,
-                    modifier = Modifier
-                        .background(Color.Blue)
+                    color = Color.White
                 )
             }
         }
