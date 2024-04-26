@@ -1,81 +1,106 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import jdk.jfr.Enabled
 
 @Composable
 @Preview
-fun LoginScreen(onLoginClicked: (userName: String, password: String) -> Unit) {
+fun LoginScreen() {
 
-    val userName = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+    var user by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var passVisible by remember { mutableStateOf(false) }
+    val buttonEnabled = user.isNotBlank() && password.isNotBlank()
 
-    Surface(color = MaterialTheme.colors.background) {
+
+    MaterialTheme {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterVertically),
+            modifier = Modifier.fillMaxSize()
         ) {
-            // Pedir usuario
-            OutlinedTextField(
-                value = userName.value,
-                onValueChange = { userName.value = it },
-                label = { Text(text = "Usuario") },
-                modifier = Modifier
-                    .height(75.dp)
-                    .width(300.dp),
-                singleLine = true
-            )
+            /*
+            Usuario (user, { user= it})
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Pedir clave
-            OutlinedTextField(
-                value = password.value,
-                onValueChange = { password.value = it },
-                label = { Text(text = "Password") },
-                modifier = Modifier
-                    .height(75.dp)
-                    .width(300.dp),
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Botón log in
-            Button(
-                onClick = {
-                    onLoginClicked(userName.value, password.value)
-                },
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(75.dp)
-                    .padding(20.dp),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Log in",
-                    color = Color.White
-                )
+            Usuario(user) {
+                user = it
             }
+             */
+
+            Usuario(
+                user = user,
+                onUserChanged = { user = it }
+            )
+
+            Password(
+                password = password,
+                onPasswordChange = { password = it },
+                passVisible = passVisible,
+                onPassVisibleChange = { passVisible = it }
+            )
+
+            LoginButton(onClick = {user = ""; password = ""}, buttonEnabled)
         }
     }
-
 }
 
 @Composable
-@Preview
-fun PreviewLoginScreen() {
-    LoginScreen(onLoginClicked = { _, _ -> })
+fun Usuario(
+    user: String,
+    onUserChanged: (String) -> Unit
+) {
+
+    OutlinedTextField(
+        value = user,
+        onValueChange = onUserChanged,
+        label = { Text("Usuario") }
+    )
+}
+
+@Composable
+fun Password(
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    passVisible: Boolean,
+    onPassVisibleChange: (Boolean) -> Unit
+) {
+
+    OutlinedTextField(
+        value = password,
+        onValueChange = onPasswordChange,
+        label = { Text("Contraseña") },
+        visualTransformation = if (passVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            IconToggleButton(
+                checked = passVisible,
+                onCheckedChange = onPassVisibleChange
+            ) {
+                Icon(
+                    imageVector = if (passVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                    contentDescription = null
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun LoginButton(onClick: () -> Unit, enabled: Boolean) {
+    Button(
+        onClick = {
+            onClick
+        },
+        enabled = enabled
+    ) {
+        Text(text = "Login")
+    }
 }
